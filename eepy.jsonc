@@ -1,0 +1,31 @@
+{
+    "shell": {
+        "windows": {
+            "executable": "pwsh.exe",
+            "args": [
+                "-c"
+            ]
+        }
+    },
+    "commands": {
+        "run": {
+            "description": "run odin project",
+            "cmd": [
+                "odin run ./src/main.odin -file"
+            ]
+        },
+        "build": {
+            "description": "build odin project",
+            "cmd": [
+                "odin build ./src/main.odin -file &&",
+                "mv ./main.exe ./build/ctemplates.exe"
+            ]
+        },
+        "clean": {
+            "description": "clean build folder",
+            "cmd": [
+                "rm -r build/*"
+            ]
+        }
+    }
+}

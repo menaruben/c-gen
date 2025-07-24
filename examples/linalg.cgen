@@ -1,0 +1,17 @@
+@comptime(T, dimensions)
+@alias Vec = struct Vec_${dimensions}D_${T}
+{
+    struct Vec {
+        ${for (int i = 0; i < dimensions; i++) {
+            T dim_${i};
+        }}
+    };
+
+    Vec vec_add_${dimensions}d_${T}(Vec a, Vec b) {
+        Vec result;
+        ${for (int i = 0; i < dimensions; i++) {
+            result.dim_${i} = a.dim_${i} + b.dim_${i};
+        }}
+        return result;
+    }
+}

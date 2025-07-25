@@ -1,5 +1,6 @@
 package main
 
+import "core:bytes"
 import "core:strings"
 import "core:path/filepath"
 import "core:fmt"
@@ -29,14 +30,6 @@ main :: proc() {
         fmt.println("Error reading header file: ", header_err)
         return
     }
-
-    fmt.println("---- Template file content ----")
-    fmt.println(string(tmpl_content))
-
-    fmt.println("---- Header file content ----")
-    fmt.println(string(header_content))
-
-    fmt.println("---- Tokenizing template ----")
     
     tokens := [dynamic]t.Token{}
     tokenizer := t.Tokenizer{
@@ -56,6 +49,7 @@ main :: proc() {
         if !ok {
             enum_name = "Unknown"
         }
-        fmt.println("Token:", enum_name, " Value:", token.value)
+        fmt.printfln("Type: %s, Value: `%s`", enum_name, token.value)
     }
+    fmt.println()
 }

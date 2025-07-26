@@ -1,0 +1,6 @@
+@comptime(T)
+
+struct List_${T} {
+    struct List_${T} *next;
+    ${T} value; 
+};

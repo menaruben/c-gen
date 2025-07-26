@@ -1,12 +1,22 @@
 package tokenizer
 
+import "core:fmt"
 Token :: struct {
     kind: TokenKind,
     value: string,
 }
 
+token_to_string :: proc(token: Token) -> string {
+    kind_name, ok := fmt.enum_value_to_string(token.kind)
+    if !ok {
+        kind_name = "Unknown"
+    }
+    return fmt.aprintf("<%s,`%s`>", kind_name, token.value)
+}
+
 TokenKind :: enum {
     Builtin,
+    Interpolation,
     Identifier,
     Keyword,
     StringLiteral,

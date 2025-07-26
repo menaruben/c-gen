@@ -35,6 +35,11 @@ tokenize :: proc(t: ^Tokenizer) -> bool {
             continue
         }
 
+        if (current_char == '$') {
+            handle_interpolation(t, &current_token_bytes)
+            continue
+        }
+
         if (is_punctuation(current_char)) {
             handle_punctuation(t, current_char, &current_token_bytes)
             continue
@@ -70,6 +75,44 @@ tokenize :: proc(t: ^Tokenizer) -> bool {
     }
 
     return true
+}
+
+handle_interpolation :: proc(t: ^Tokenizer, current_token_bytes: ^strings.Builder) {
+    id_sb := strings.Builder{}
+    append(&id_sb.buf, '$')
+
+    t.position += 1 // skip '$'
+    if t.position >= len(t.input) || t.input[t.position] != '{' {
+        fmt.printfln("Error: Expected '{' after '$' at position %d", t.position)
+        os.exit(1)
+    }
+
+    append(&id_sb.buf, '{')
+    t.position += 1 // skip '{'
+
+    for t.position < len(t.input) && t.input[t.position] != '}' {
+        ch := t.input[t.position]
+        append(&id_sb.buf, ch)
+        t.position += 1
+    }
+
+    if len(id_sb.buf) == 0 {
+        fmt.printfln("Error: Empty interpolation %d", t.position)
+        os.exit(1)
+    }
+
+    if t.position >= len(t.input) || t.input[t.position] != '}' {
+        fmt.printfln("Error: Unclosed interpolation at position %d", t.position)
+        os.exit(1)
+    }
+
+    append(&id_sb.buf, '}')
+    t.position += 1 // skip '}'
+
+    append(&t.tokens, Token{
+        kind = .Interpolation,
+        value = strings.to_string(id_sb),
+    })
 }
 
 handle_builtins :: proc(t: ^Tokenizer, current_token_bytes: ^strings.Builder) {

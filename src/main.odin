@@ -50,13 +50,13 @@ main :: proc() {
         return
     }
 
-    program := ir.build_ir_program(tokenizer.tokens[:])
-    fmt.println("Generated IR Program:")
-    for name, function in program.functions {
-        fmt.printf("Function: %s\n", name)
-        for instr, _ in function.instructions {
-            fmt.print("  ")
-            fmt.println(instr)
-        }
-    }
+    comptime_id_values := make(map[string]string)
+    defer delete(comptime_id_values)
+
+    comptime_id_values["T"] = "int"
+
+    program := ir.generate_program(tokenizer.tokens[:], comptime_id_values)
+    fmt.println("Comptime IDs: ", program.comptime_ids)
+    fmt.println("Comptime Aliases: ", program.comptime_aliases)
+    fmt.println("Generated Source:\n", strings.to_string(program.generated_source_builder))
 }

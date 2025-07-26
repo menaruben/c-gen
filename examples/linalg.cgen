@@ -1,18 +1,19 @@
 @comptime(T, N)
+@alias(Vec = struct Vec_${N}D_${T})
 
 struct Vec_${N}D_${T} {
-    @for (int i = 0; i < N; ++i) { 
-        @emitln("%s dim_%d", T, i);
+    @for (i : 1 ..= ${N}) { 
+        ${T} dim_${i};
     }
 };
 
-struct Vec_${N}D_${T} vec_add_${N}d_${T}
+${Vec} vec_add_${N}d_${T}
 (
-    struct Vec_${N}D_${T} a, 
-    struct Vec_${N}D_${T} b
+    ${Vec} a, 
+    ${Vec} b
 ) {
-    struct Vec_${N}D_${T} result = {0};
-    @for (int i = 1; i <= N; ++i) {
+    ${Vec} result = {0};
+    @for (i : 1 ..= ${N}) {
         result.dim_${i} = a.dim_${i} + b.dim_${i};
     }
     return result;

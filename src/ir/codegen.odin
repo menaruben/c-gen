@@ -24,8 +24,12 @@ generate_program :: proc(
         comptime_id_values = comptime_id_values,
     }
 
-    for i := 0; i < len(tokens); i += 1 {
-        token := tokens[i]
+    // TODO: think about how to more efficiently resolve this. works and makes it way easier because i wont forget to resolve
+    // in the future but i iterate over the tokens atleast twice now. 
+    resolved_tokens := resolve_all_interpolations_and_identifiers(tokens, comptime_id_values)
+
+    for i := 0; i < len(resolved_tokens); i += 1 {
+        token := resolved_tokens[i]
         enum_name, ok := fmt.enum_value_to_string(token.kind)
         if !ok {
             enum_name = "Unknown"
@@ -39,6 +43,7 @@ generate_program :: proc(
                 i = handle_keyword(&program, tokens, i)
 
             case:
+                // TODO: implement other kinds
                 fmt.printfln("Unhandled token kind: %s", enum_name)
                 show_next_n_tokens(tokens, i, 5)
                 os.exit(1)
@@ -87,6 +92,7 @@ handle_builtin :: proc(program: ^GeneratedProgram, tokens: []tk.Token, index: in
             }
 
         case:
+            // TODO: handle other builtins
             fmt.printfln("IR Gen Error: Unhandled builtin %s", token.value)
             os.exit(1)
     }
@@ -104,6 +110,7 @@ handle_keyword :: proc(program: ^GeneratedProgram, tokens: []tk.Token, index: in
             new_index = parse_struct(program, tokens, new_index)
 
         case:
+            // TODO: handle other keywords
             fmt.printfln("Unhandled keyword: %s at index %d", token.value, index)
             show_next_n_tokens(tokens, index, 5)
             os.exit(1)
@@ -112,6 +119,7 @@ handle_keyword :: proc(program: ^GeneratedProgram, tokens: []tk.Token, index: in
     return new_index
 }
 
+// TODO: extract to separate file and split up into smaller procs for easier readability
 parse_struct :: proc(program: ^GeneratedProgram, tokens: []tk.Token, index: int) -> (new_index: int) {
     new_index = index
     token := tokens[new_index]
@@ -120,7 +128,6 @@ parse_struct :: proc(program: ^GeneratedProgram, tokens: []tk.Token, index: int)
     append(&program.generated_source_builder.buf, " ")
 
     struct_name := get_value_of_expected_token_kind(tokens, new_index, tk.TokenKind.Identifier)
-    struct_name = resolve_identifier(token, program.comptime_id_values)
 
     append(&program.generated_source_builder.buf, struct_name)
     new_index += 1
@@ -155,17 +162,7 @@ parse_struct :: proc(program: ^GeneratedProgram, tokens: []tk.Token, index: int)
                 break;
             }
 
-            #partial switch t.kind {
-                case tk.TokenKind.Interpolation:
-                    comptime_id := extract_comptime_id_from_interpolation_string(t.value)
-                    resolved_value := resolve_comptime_id_value(comptime_id, program.comptime_id_values)
-                    append(&field_tokens, resolved_value)
-                case tk.TokenKind.Identifier:
-                    resolved_id := resolve_identifier(t, program.comptime_id_values)
-                    append(&field_tokens, resolved_id)
-                case:
-                    append(&field_tokens, t.value)
-            }
+            append(&field_tokens, t.value)
 
             new_index += 1;
         }
@@ -191,8 +188,24 @@ parse_struct :: proc(program: ^GeneratedProgram, tokens: []tk.Token, index: int)
     return new_index
 }
 
-string_contains_interpolation :: proc(str: string) -> bool {
-    return strings.contains(str, "${") && strings.contains(str, "}")
+// TODO: move all of these utility functions to separate files depending on their purpose
+
+resolve_all_interpolations_and_identifiers :: proc(\
+    tokens: []tk.Token, 
+    comptime_id_values: map[string]string
+) -> (resolved_tokens: []tk.Token) {
+    resolved_tokens = tokens
+    
+    for i in 0..<len(tokens) {
+        token := tokens[i]
+
+        if token.kind == tk.TokenKind.Interpolation || token.kind == tk.TokenKind.Identifier {
+            resolved_value := resolve_identifier(token, comptime_id_values)
+            resolved_tokens[i] = tk.Token{kind = tk.TokenKind.Identifier, value = resolved_value}
+        }
+    }
+
+    return resolved_tokens
 }
 
 resolve_identifier :: proc(token: tk.Token, comptime_id_values: map[string]string) -> string {
@@ -236,10 +249,6 @@ resolve_comptime_id_value :: proc(comptime_id: string, comptime_id_values: map[s
     assert(ok, fmt.aprintfln("Comptime ID '%s' not found in values map", comptime_id))
     return value
 }
-
-/*-----------------------------------------------------
-    helper functions for handling expected tokens
------------------------------------------------------*/ 
 
 expect_token :: proc(tokens: []tk.Token, index: int, expected_kind: tk.TokenKind) {
     assert(index < len(tokens), "Index out of bounds in expect_token")

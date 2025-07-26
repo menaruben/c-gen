@@ -56,7 +56,5 @@ main :: proc() {
     comptime_id_values["T"] = "int"
 
     program := ir.generate_program(tokenizer.tokens[:], comptime_id_values)
-    fmt.println("Comptime IDs: ", program.comptime_ids)
-    fmt.println("Comptime Aliases: ", program.comptime_aliases)
     fmt.println("Generated Source:\n", strings.to_string(program.generated_source_builder))
 }

@@ -8,7 +8,7 @@ import tk "../tokenizer"
 GeneratedProgram :: struct {
     generated_source_builder: [dynamic]string,
     comptime_ids: [dynamic]string,
-    comptime_aliases: map[string]string,
+    comptime_aliases: map[string][]tk.Token,
     comptime_id_values: map[string]string
 }
 
@@ -16,7 +16,7 @@ generate_program :: proc(
     tokens: []tk.Token,
     comptime_id_values: map[string]string
 ) -> GeneratedProgram {
-    alias_map := make(map[string]string)
+    alias_map := make(map[string][]tk.Token)
     program := GeneratedProgram{
         comptime_aliases = alias_map,
         comptime_ids = [dynamic]string{},
@@ -30,6 +30,8 @@ generate_program :: proc(
         if !ok {
             enum_name = "Unknown"
         }
+
+        fmt.printfln("processing token %s", tk.token_to_string(token))
 
         #partial switch token.kind {
             case .Builtin:

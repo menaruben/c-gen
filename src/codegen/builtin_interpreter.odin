@@ -164,7 +164,9 @@ handle_for_loop :: proc(program: ^GeneratedProgram, tokens: []tk.Token, index: i
     if is_inclusive {
         for i := start_value_number; i <= end_value_number; i += 1 {
             // resolve loop variable and store in comptime_id_values
-            program.comptime_aliases[loop_var] = fmt.tprintf("%d", i)
+            program.comptime_aliases[loop_var] = []tk.Token{
+                tk.Token{kind = tk.TokenKind.IntegerLiteral, value = fmt.tprintf("%d", i)}
+            }
 
             // append loop body to emitted code
             for loop_token in loop_body {
@@ -174,7 +176,9 @@ handle_for_loop :: proc(program: ^GeneratedProgram, tokens: []tk.Token, index: i
     } else {
         for i := start_value_number; i < end_value_number; i += 1 {
             // resolve loop variable and store in comptime_id_values
-            program.comptime_aliases[loop_var] = fmt.tprintf("%d", i)
+            program.comptime_aliases[loop_var] = []tk.Token{
+                tk.Token{kind = tk.TokenKind.IntegerLiteral, value = fmt.tprintf("%d", i)}
+            }
 
             // append loop body to emitted code
             for loop_token in loop_body {

@@ -1,5 +1,6 @@
 package codegen
 
+import "core:strings"
 import "core:fmt"
 import tk "../tokenizer"
 
@@ -15,4 +16,13 @@ show_next_n_tokens :: proc(tokens: []tk.Token, index: int, n: int) {
         fmt.printf("<%s, `%s`>    ", t_enum_name, t.value)
     }
     fmt.printfln("...    ]")
+}
+
+get_literal_alias_value :: proc(alias_value: []tk.Token) -> string {
+    sb := strings.Builder{}
+    for t in alias_value {
+        append(&sb.buf, t.value)
+        append(&sb.buf, " ")
+    }
+    return strings.to_string(sb)
 }

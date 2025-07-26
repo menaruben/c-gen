@@ -8,7 +8,7 @@ import "core:fmt"
 resolve_all_interpolations_and_identifiers :: proc(
     tokens: []tk.Token, 
     comptime_id_values: map[string]string,
-    comptime_aliases: map[string]string
+    comptime_aliases: map[string][]tk.Token
 ) -> (resolved_tokens: []tk.Token) {
     resolved_tokens = tokens
     
@@ -28,7 +28,7 @@ resolve_all_interpolations_and_identifiers :: proc(
 resolve_identifier :: proc(
     value: string, 
     comptime_id_values: map[string]string, 
-    comptime_aliases:  map[string]string
+    comptime_aliases:  map[string][]tk.Token
 ) -> string {
     id_sb := strings.Builder{}
     interpolation_id_sb := strings.Builder{}
@@ -64,7 +64,6 @@ resolve_identifier :: proc(
     return strings.to_string(id_sb)
 }
 
-@(private)
 extract_comptime_id_from_interpolation_string :: proc(interpolation: string) -> string {
     // interpolation is in the form of ${id}
     if len(interpolation) < 3 || interpolation[0] != '$' || interpolation[1] != '{' || interpolation[len(interpolation)-1] != '}' {
@@ -78,18 +77,20 @@ extract_comptime_id_from_interpolation_string :: proc(interpolation: string) -> 
 resolve_comptime_id_value :: proc(
     comptime_id: string,
     comptime_id_values: map[string]string, 
-    comptime_aliases: map[string]string
+    comptime_aliases: map[string][]tk.Token
 ) -> string {
     value: string
     ok: bool
+    tokens: []tk.Token
     
     value, ok = comptime_id_values[comptime_id]
     if !ok {
-        value, ok = comptime_aliases[comptime_id]
+        tokens, ok = comptime_aliases[comptime_id]
         if !ok {
             fmt.printfln("Comptime identifier '%s' not found in values or aliases.", comptime_id)
             os.exit(1)
         }
+        value = get_literal_alias_value(tokens)
     }
 
     return value

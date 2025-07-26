@@ -52,18 +52,16 @@ handle_builtin :: proc(program: ^GeneratedProgram, tokens: []tk.Token, index: in
             expect_token_with_value(tokens, new_index, tk.TokenKind.Operator, tk.OP_ASSIGN)
             new_index += 1
 
-            alias_value_sb := strings.Builder{}
+            alias_value := [dynamic]tk.Token{}
             for new_index < len(tokens) && tokens[new_index].value != tk.PUNCT_RPAREN {
                 t := tokens[new_index]
                 new_index += 1
-                append(&alias_value_sb.buf, t.value)
-                append(&alias_value_sb.buf, " ")
+                append(&alias_value, t)
                 // TODO: implement variadic aliases in @alias instead of multiple @alias calls
             }
             expect_token_with_value(tokens, new_index, tk.TokenKind.Punctuation, tk.PUNCT_RPAREN)
             new_index += 1
-            alias_value := strings.to_string(alias_value_sb)
-            program.comptime_aliases[alias_name] = alias_value
+            program.comptime_aliases[alias_name] = alias_value[:]
             return new_index
 
         case tk.BUILTIN_FOR:

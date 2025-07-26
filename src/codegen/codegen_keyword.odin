@@ -31,6 +31,33 @@ handle_keyword :: proc(program: ^GeneratedProgram, tokens: []tk.Token, index: in
             expect_token_with_value(tokens, new_index, tk.TokenKind.Punctuation, tk.PUNCT_SEMICOLON)
             append(&program.generated_source_builder, ";")
             new_index += 1
+            return new_index
+
+        case tk.KW_INT,
+            tk.KW_FLOAT,
+            tk.KW_CHAR,
+            tk.KW_BOOL,
+            tk.KW_VOID,
+            tk.KW_SHORT,
+            tk.KW_LONG,
+            tk.KW_DOUBLE,
+            tk.KW_UNSIGNED,
+            tk.KW_SIGNED,
+            tk.KW_CONST,
+            tk.KW_STATIC,
+            tk.KW_EXTERN,
+            tk.KW_IF,
+            tk.KW_ELSE,
+            tk.KW_WHILE,
+            tk.KW_SWITCH,
+            tk.KW_CASE,
+            tk.KW_DEFAULT,
+            tk.KW_BREAK,
+            tk.KW_CONTINUE:
+            append(&program.generated_source_builder, token.value)
+            append(&program.generated_source_builder, " ")
+            new_index += 1
+            return new_index
 
         case:
             // TODO: handle other keywords

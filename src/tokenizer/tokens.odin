@@ -19,20 +19,20 @@ TokenKind :: enum {
     Punctuation,
 }
 
-BUILTIN_COMPTIME :: "comptime"
-BUILTIN_ALIAS :: "alias"
-BUILTIN_META_LBRACE :: "@{"
-BUILTIN_CODE_LBRACE :: "${"
+BUILTIN_COMPTIME :: "@comptime"
+BUILTIN_ALIAS :: "@alias"
 BUILTIN_EMIT :: "@emit"
 BUILTIN_EMITLN :: "@emitln"
+BUILTIN_FOR :: "@for"
+BUILTIN_IF :: "@if"
 
 BUILTINS :: []string{
     BUILTIN_COMPTIME,
     BUILTIN_ALIAS,
-    BUILTIN_META_LBRACE,
-    BUILTIN_CODE_LBRACE,
     BUILTIN_EMIT,
     BUILTIN_EMITLN,
+    BUILTIN_FOR,
+    BUILTIN_IF,
 }
 
 KW_struct :: "struct"

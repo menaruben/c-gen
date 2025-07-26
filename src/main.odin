@@ -6,15 +6,21 @@ import "core:path/filepath"
 import "core:fmt"
 import "core:os"
 import t "tokenizer"
+import "ir"
 
 main :: proc() {
-    tmpl_file, tmpl_ok := filepath.abs("./examples/linalg.cgen")
+    if len(os.args) < 2 {
+        fmt.println("Usage: main <template_file>")
+        return
+    }
+
+    tmpl_file_path := os.args[1]
+    tmpl_file, tmpl_ok := filepath.abs(tmpl_file_path)
     if !tmpl_ok {
         fmt.println("Error getting absolute path for template file.")
         return
     }
 
-    fmt.println("Using template file: ", tmpl_file)
     tmpl_content, err := os.read_entire_file_or_err(tmpl_file)
     if err != nil {
         fmt.println("Error reading template file: ", err)
@@ -38,18 +44,19 @@ main :: proc() {
         tokens = tokens,
     }
 
-    sucess := t.tokenize(&tokenizer)
-    if !sucess {
+    success := t.tokenize(&tokenizer)
+    if !success {
         fmt.println("Tokenization failed.")
         return
     }
 
-    for token, _ in tokenizer.tokens {
-        enum_name, ok  := fmt.enum_value_to_string(token.kind)
-        if !ok {
-            enum_name = "Unknown"
+    program := ir.build_ir_program(tokenizer.tokens[:])
+    fmt.println("Generated IR Program:")
+    for name, function in program.functions {
+        fmt.printf("Function: %s\n", name)
+        for instr, _ in function.instructions {
+            fmt.print("  ")
+            fmt.println(instr)
         }
-        fmt.printfln("Type: %s, Value: `%s`", enum_name, token.value)
     }
-    fmt.println()
 }

@@ -1,0 +1,5 @@
+@comptime(msg) {
+    const char *greet() {
+        return msg;
+    }
+} 

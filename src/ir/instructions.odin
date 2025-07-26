@@ -113,22 +113,21 @@ Label :: struct {
 }
 
 Jump :: struct {
-    target: string,
+    label: string,
 }
 
 JumpIfTrue :: struct {
     truthy_condition: StackValue,
-    target: string,
+    label: string,
 }
 
 JumpIfFalse :: struct {
     falsy_condition: StackValue,
-    target: string,
+    label: string,
 }
 
 Return :: struct {
     value: StackValue,
-    return_stack: Stack,
 }
 
 Call :: struct {

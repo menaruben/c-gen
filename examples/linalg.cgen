@@ -1,19 +1,18 @@
-@comptime(T, dimensions) {
-    @alias(Vec = struct Vec_${dimensions}D_${T},
-        vec_add = vec_add_${dimensions}d_${T});
+@comptime(T, dimensions)
+@alias(
+    Vec     = struct Vec_${dimensions}D_${T},
+    vec_add = vec_add_${dimensions}d_${T})
 
-    struct Vec_${dimensions}D_${T} {
-        ${for (int i = 0; i < dimensions; ++i) { 
-            @emit("T dim_%d\n", i);
-        }}
-    };
+struct Vec_${dimensions}D_${T} {
+    ${for (int i = 0; i < dimensions; ++i) { 
+        @emit("%s dim_%d\n", T, i);
+    }}
+};
 
-    Vec vec_add(Vec a, Vec b) {
-        Vec result = {0};
-        @{for (int i = 0; i < dimensions; ++i) {
-            result.dim_${i} = a.dim_${i} + b.dim_${i};
-        }}
-        return result;
+Vec vec_add(Vec a, Vec b) {
+    Vec result = {0};
+    @for (int i = 0; i < dimensions; ++i) {
+        result.dim_${i} = a.dim_${i} + b.dim_${i};
     }
+    return result;
 }
-

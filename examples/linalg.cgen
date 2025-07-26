@@ -1,18 +1,18 @@
-@comptime(T, dimensions)
+@comptime(T, N)
 
-struct Vec_${dimensions}D_${T} {
-    @for (int i = 0; i < dimensions; ++i) { 
+struct Vec_${N}D_${T} {
+    @for (int i = 0; i < N; ++i) { 
         @emitln("%s dim_%d", T, i);
     }
 };
 
-struct Vec_${dimensions}D_${T} vec_add_${dimensions}d_${T}
+struct Vec_${N}D_${T} vec_add_${N}d_${T}
 (
-    struct Vec_${dimensions}D_${T} a, 
-    struct Vec_${dimensions}D_${T} b
+    struct Vec_${N}D_${T} a, 
+    struct Vec_${N}D_${T} b
 ) {
-    struct Vec_${dimensions}D_${T} result = {0};
-    @for (int i = 1; i <= dimensions; ++i) {
+    struct Vec_${N}D_${T} result = {0};
+    @for (int i = 1; i <= N; ++i) {
         result.dim_${i} = a.dim_${i} + b.dim_${i};
     }
     return result;

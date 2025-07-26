@@ -50,10 +50,11 @@ main :: proc() {
         return
     }
 
+    // TODO: read comptime identifiers from the header file and foreach variant of the comptime id, generate program code
     comptime_id_values := make(map[string]string)
     defer delete(comptime_id_values)
-
     comptime_id_values["T"] = "int"
+    comptime_id_values["N"] = "3"
 
     program := ir.generate_program(tokenizer.tokens[:], comptime_id_values)
     fmt.println("Generated Source:\n", strings.to_string(program.generated_source_builder))

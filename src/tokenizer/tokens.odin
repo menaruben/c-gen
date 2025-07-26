@@ -46,6 +46,7 @@ BUILTINS :: []string{
 }
 
 KW_struct :: "struct"
+KW_UNION :: "union"
 KW_for :: "for"
 KW_RETURN :: "return"
 KW_INT :: "int"

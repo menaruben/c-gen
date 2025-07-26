@@ -20,7 +20,7 @@
             "cmd": [
                 "rm -r build/* &&",
                 "odin build ./src/main.odin -file &&",
-                "mv ./main.exe ./build/ctemplates.exe"
+                "mv ./main.exe ./build/cgen.exe"
             ]
         },
         "clean": {

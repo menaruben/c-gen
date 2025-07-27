@@ -1,0 +1,52 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "🛠️build",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "cmd.exe",
+            "args": [],
+            "preLaunchTask": "eepy:build",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "internalConsoleOptions": "neverOpen",
+            "stopAtEntry": true
+        },
+        {
+            "name": "🐛run with debug",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/cgen.exe",
+            "args": [
+                "${workspaceFolder}/examples/linalg.cgen"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "symbolSearchPath": "${workspaceFolder}/build",
+            "console": "externalTerminal",
+            "logging": {
+                "engineLogging": true,
+            },
+            "sourceFileMap": {
+                "/src": "${workspaceFolder}/src",
+                "/examples": "${workspaceFolder}/examples"
+            },
+            "preLaunchTask": "eepy:build-debug"
+        },
+        {
+            "name": "🏃‍♀️‍➡️run without debug",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/cgen.exe",
+            "args": [
+                "${workspaceFolder}/examples/linalg.cgen"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "symbolSearchPath": "${workspaceFolder}/build",
+            "console": "externalTerminal",
+            "preLaunchTask": "eepy:build"
+        }
+    ],
+}

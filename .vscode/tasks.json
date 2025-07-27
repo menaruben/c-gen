@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+        "label": "eepy:build",
+        "type": "shell",
+        "command": "eepy build",
+        "problemMatcher": [],
+    },
+    {
+      "label": "eepy:build-debug",
+      "type": "shell",
+      "command": "eepy build-debug",
+      "problemMatcher": [],
+    },
+    {
+      "label": "eepy:run",
+      "type": "shell",
+      "command": "eepy run",
+      "problemMatcher": [],
+    },
+    {
+      "label": "eepy:clean",
+      "type": "shell",
+      "command": "eepy clean",
+      "problemMatcher": [],
+    }
+  ]
+}

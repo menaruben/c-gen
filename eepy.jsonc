@@ -14,13 +14,19 @@
                 "odin run ./src/main.odin -file"
             ]
         },
-        
         "build": {
             "description": "build odin project",
             "cmd": [
                 "rm -r build/* &&",
                 "odin build ./src/main.odin -file &&",
                 "mv ./main.exe ./build/cgen.exe"
+            ]
+        },
+        "build-debug": {
+            "description": "build odin project in debug mode",
+            "cmd": [
+                "rm -r build/* &&",
+                "odin build src -out:build/cgen.exe -debug",
             ]
         },
         "clean": {
